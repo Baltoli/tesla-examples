@@ -2,7 +2,6 @@
 #define LOCK_H
 
 #include <stdbool.h>
-#include <stdatomic.h>
 #include <tesla.h>
 #include <tesla-macros.h>
 
