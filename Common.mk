@@ -1,13 +1,16 @@
 # These TESLA-specific variables can be overridden at the command line if your
 # TESLA installation is set up differently.
 TESLA ?= $(TESLA_ROOT)/bin/tesla
-TESLA_CC ?= $(TESLA_ROOT)/bin/clang
 TESLA_INC ?= $(TESLA_ROOT)/include
 TESLA_LIB ?= $(TESLA_ROOT)/lib
-TESLA_LINK ?= $(TESLA_ROOT)/bin/llvm-link
+
+TESLA_CC ?= clang
+TESLA_LINK ?= llvm-link
+
+SYSTEM_INC := $(shell $(TESLA_CC) -print-search-dirs | grep libraries | cut -d= -f2)/include
 
 %.tesla : %.c
-	$(TESLA) analyse $(abspath $<) -o $@ -- -I$(TESLA_INC) $(CFLAGS)
+	$(TESLA) analyse $(abspath $<) -o $@ -- -I$(TESLA_INC) -I$(SYSTEM_INC) $(CFLAGS) 
 
 %.bc : %.c
 	$(TESLA_CC) -emit-llvm -I$(TESLA_INC) $(CFLAGS) -O0 -c $(abspath $<) -o $@
